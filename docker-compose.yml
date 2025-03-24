@@ -1,0 +1,55 @@
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    command: >
+      --model /model
+      --host 0.0.0.0 
+      --port 8000
+      --gpu-memory-utilization 0.95
+      --swap-space 4
+      --max-model-len 2048
+      --max-num-batched-tokens 2048
+      --max-num-seqs 2
+      --trust-remote-code
+      --dtype float16
+      --load-format bitsandbytes
+      --quantization bitsandbytes
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./codellama_merged:/model:ro
+      - ~/.cache/torch:/root/.cache/torch
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - app-network
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - VLLM_SERVER=http://vllm:8000
+    networks:
+      - app-network
+    depends_on:
+      - vllm
+  streamlit:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000/api/v1
+    networks:
+      - app-network
+    depends_on:
+      - api
+networks:
+  app-network:
+    driver: bridge 
