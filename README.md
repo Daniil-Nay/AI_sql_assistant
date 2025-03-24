@@ -37,5 +37,6 @@ An flow example:
 ![img.png](img.png)
 
 ## Video demo:
-[!Short usage demo]](https://drive.google.com/file/d/1Qj6sBufLrO8OHwmbvz_Pmih0AL8Ey62W/view?usp=sharing)
+[Short usage demo](https://drive.google.com/file/d/1Qj6sBufLrO8OHwmbvz_Pmih0AL8Ey62W/view?usp=sharing)
+
 
